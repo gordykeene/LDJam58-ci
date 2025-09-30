@@ -28,7 +28,7 @@ Details on each are found below.
 
 ### Kanban Board
 
-- [Project Kanban Board]([CHANGE_ME])
+- [Project Kanban Board](https://zube.io/enigmadragons/ldjam58/w/kanban/kanban)
 
 - [Kanban Workflow Process](./guides/kanban-workflow-guide.md)
 - [Kanban Board Setup](./guide/kanban-board-guide.md)
@@ -39,17 +39,17 @@ Details on each are found below.
 
 Software Requirements:
 - Git
-- Unity 2023 (Version [CHANGE_ME])
+- Unity 6 (Version 6000.3.0b3)
 - Any C# IDE
 
 Setup:
 1. Clone this repository using git
 2. Install any C# IDE of your choice. [Visual Studio Code](https://code.visualstudio.com/) recommended.
 3. Install [Unity Hub](https://unity3d.com/get-unity/download)
-4. Launch Unity Hub and Install Unity Version [CHANGE_ME]
+4. Launch Unity Hub and Install Unity Version 6000.3.0b3
 5. In Unity Hub, click Add
-6. Browse and select `../repo/src/[CHANGE_ME]`
-7. Click on `[CHANGE_ME]`
+6. Browse and select `../{repo}/src/LDJam58`
+7. Click on `LDJam58`
 
 ----
 
