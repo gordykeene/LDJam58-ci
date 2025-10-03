@@ -40,3 +40,9 @@ sysinfo.txt
 
 *.idea/
 
+# AI Generated Images
+src/LDJam58/Assets/Generated/
+src/LDJam58/Assets/Generated.meta
+
+**./.vscode
+
