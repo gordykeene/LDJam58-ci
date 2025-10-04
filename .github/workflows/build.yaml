@@ -27,12 +27,12 @@ jobs:
           - WebGL # WebGL/HTML5.
 
     steps:
-      - uses: ./.github/actions/setup-environment
-
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
           lfs: true
+
+      - uses: ./.github/actions/setup-environment
 
       - uses: actions/cache@v4
         with:
