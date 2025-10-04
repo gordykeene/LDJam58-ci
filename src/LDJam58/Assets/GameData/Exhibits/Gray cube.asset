@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: Gray cube
   m_EditorClassIdentifier: Assembly-CSharp::Assets.Scripts.ExhibitTileType
   _displayName: Gray Cube
-  _tags: 05000000f4010000
+  _tags: f4010000
   exhibitPrefab: {fileID: 6677439674201967428, guid: 816e3e0c786ac4f41b5e473f80b79a83,
     type: 3}
   exhibitSprite: {fileID: 21300000, guid: 12226d853f6f2e44faf4bf0112b0bcc0, type: 3}
   _size: {x: 2, y: 2}
-  _rarity: 1
+  _rarity: 2
   _enjoyment: 50
   _popularity: 50

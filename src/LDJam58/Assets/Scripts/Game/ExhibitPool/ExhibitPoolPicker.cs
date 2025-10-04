@@ -16,13 +16,11 @@ namespace Game.ExhibitPool
         private List<ExhibitTileType> exhibitPool;
 
         [SerializeField]
-        private float uncommonChance;
-        [SerializeField]
         private float rareChance;
         [SerializeField]
-        private float epicChance;
+        private float exoticChance;
         [SerializeField]
-        private float legendaryChance;
+        private float mythicChance;
         
         private HashSet<ExhibitTag> viableTags;
         
@@ -93,15 +91,15 @@ namespace Game.ExhibitPool
 
             var random = Rng.Float() - bonusChance;
 
-            if (random < legendaryChance)
+            if (random < mythicChance)
             {
-                rarity = ExhibitRarity.Legendary;
+                rarity = ExhibitRarity.Mythic;
                 if (GetRareExhibitCount(rarity) > 0) return rarity;
             }
 
-            if (random < epicChance)
+            if (random < exoticChance)
             {
-                rarity = ExhibitRarity.Epic;
+                rarity = ExhibitRarity.Exotic;
                 if (GetRareExhibitCount(rarity) > 0) return rarity;
             }
 
@@ -110,13 +108,7 @@ namespace Game.ExhibitPool
                 rarity = ExhibitRarity.Rare;
                 if (GetRareExhibitCount(rarity) > 0) return rarity;
             }
-
-            if (random < uncommonChance)
-            {
-                rarity = ExhibitRarity.Uncommon;
-                if (GetRareExhibitCount(rarity) > 0) return rarity;
-            }
-
+            
             rarity = ExhibitRarity.Common;
             if (GetRareExhibitCount(rarity) > 0) return rarity;
 
