@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b412d27736b9b4fdea4c2cb835454056, type: 3}
+  m_Name: RoomType
+  m_EditorClassIdentifier: Assembly-CSharp::RoomType
+  Name: Super Dino
+  Requirement: 010000000100000001000000f5010000f5010000
+  Multipliers:
+  - Tag: 1
+    Multiplier: 1.1
