@@ -44,9 +44,14 @@ sysinfo.txt
 src/LDJam58/Assets/Generated/
 src/LDJam58/Assets/Generated.meta
 
+# Ignore temporaries from GameCI
+/[Aa]rtifacts/
+/[Cc]odeCoverage/
+
 **./.vscode
 
 **/.DS_Store
 
 
 /.silas
+

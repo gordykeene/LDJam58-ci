@@ -7,6 +7,9 @@ name: Build project
 
 on: [push, pull_request]
 
+env:
+  PROJECT_PATH: './src/LDJam58'
+
 jobs:
   buildForAllSupportedPlatforms:
     name: Build for ${{ matrix.targetPlatform }}
@@ -44,6 +47,7 @@ jobs:
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
+          project-path: env.PROJECT_PATH || .
           targetPlatform: ${{ matrix.targetPlatform }}
 
       - uses: actions/upload-artifact@v4
