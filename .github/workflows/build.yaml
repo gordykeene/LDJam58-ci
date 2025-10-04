@@ -50,9 +50,9 @@ jobs:
         with:
           path: ${{ env.PROJECT_PATH }}/Library
           key: Library-${{ matrix.targetPlatform }}-${{ hashFiles('**/ProjectSettings/ProjectVersion.txt') }}
-          restore-keys:
-            - Library-${{ matrix.targetPlatform }}-
-            - Library-
+          restore-keys: |
+            Library-${{ matrix.targetPlatform }}-
+            Library-
 
       - name: Free Disk Space
         uses: jlumbroso/free-disk-space@v1.3.1
