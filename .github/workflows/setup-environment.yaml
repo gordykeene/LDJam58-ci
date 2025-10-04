@@ -1,0 +1,22 @@
+name: 'Setup Environment'
+description: 'Setup shared environment variables'
+runs:
+  using: 'composite'
+  steps:
+    - name: Set environment variables
+      shell: bash
+      run: |
+        echo "PROJECT_PATH=./src/LDJam58" >> $GITHUB_ENV
+        echo "ITCH_IO_PROJECT=enigmadragons/gallery-genius" >>  $GITHUB_ENV
+
+
+# You must also set the following secrets in your repository settings:
+# - secrets.UNITY_EMAIL
+# - secrets.UNITY_PASSWORD 
+# - secrets.UNITY_LICENSE or secrets.UNITY_SERIAL
+#   see: https://game.ci/docs/github/activation#personal-license
+#   and  https://game.ci/docs/github/activation#professional-license
+#
+# - secrets.ITCH_IO_API_KEY
+#   see: https://itch.io/docs/itchio/cli/#getting-an-api-key
+# Note the above "ITCH_IO_PROJECT" is formed from the user/project-name
