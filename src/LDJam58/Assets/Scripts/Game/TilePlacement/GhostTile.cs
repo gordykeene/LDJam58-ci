@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.Events;
 
 namespace Game.TilePlacement
@@ -19,19 +20,19 @@ namespace Game.TilePlacement
 
         public bool IsOverlapping { get; private set; }
         
-        private void OnCollisionEnter(Collision other)
+        private void OnTriggerEnter(Collider other)
         {
             IsOverlapping = true;
             UpdateMaterial(errorMaterial);
         }
 
-        private void OnCollisionExit(Collision other)
+        private void OnTriggerExit(Collider other)
         {
             IsOverlapping = false;
             UpdateMaterial(ghostMaterial);
         }
 
-        private void OnCollisionStay(Collision other)
+        private void OnTriggerStay(Collider other)
         {
             if(!IsOverlapping) UpdateMaterial(errorMaterial);
             IsOverlapping = true;
@@ -51,6 +52,8 @@ namespace Game.TilePlacement
             //change all the instance layers to Ghost
             SetLayerRecursively(ghostPlaceable, LayerMask.NameToLayer(ghostLayerMask));
             CollectRenderers(ghostPlaceable);
+            SetCollidersToTrigger();
+            SetupNavmesh();
             UpdateMaterial(ghostMaterial);
         }
 
@@ -72,13 +75,28 @@ namespace Game.TilePlacement
             }
         }
 
+        private void SetCollidersToTrigger()
+        {
+            var colliders = GetComponentsInChildren<Collider>(true);
+            foreach (var col in colliders)
+            {
+                col.isTrigger = true;
+            }
+        }
+        
+        private void SetupNavmesh()
+        {
+            var obstacle = ghostPlaceable.GetComponentInChildren<NavMeshObstacle>();
+            obstacle.enabled = false;
+        }
+
         private void CollectRenderers(GameObject placeable)
         {
             ghostRenderers.Clear();
             var mainRend =  placeable.GetComponent<Renderer>();
             var childRend = placeable.GetComponentsInChildren<Renderer>(placeable);
             
-            ghostRenderers.Add(mainRend);
+            if(mainRend) ghostRenderers.Add(mainRend);
             ghostRenderers.AddRange(childRend);
         }
         

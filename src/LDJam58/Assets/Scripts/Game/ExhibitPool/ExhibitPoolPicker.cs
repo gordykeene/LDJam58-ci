@@ -84,7 +84,7 @@ namespace Game.ExhibitPool
             RecalculateViableTags(rarityPool);
             var tag = viableTags.ToList().DrawRandom();
             var tagPool = rarityPool.Where(x => x.Tags.Contains(tag)).ToList();
-            return tagPool.DrawRandom();
+            return tagPool.Random();
         }
 
         private ExhibitRarity PickRandomExhibitRarity(float bonusChance = 0f)

@@ -99,14 +99,20 @@ namespace Game.TilePlacement
             //unghost on click
             if (Input.GetMouseButtonDown(0))
             {
-                currentState = PlacementState.NoTarget;
-                var inst= Instantiate(placeable, ghostTile.transform.position, ghostTile.transform.rotation);
-                inst.transform.SetParent(grid.transform);
-                DisableGhostObject();
+                PlaceExhibit();
             }
         }
 
-        
+        private void PlaceExhibit()
+        {
+            currentState = PlacementState.NoTarget;
+            var inst= Instantiate(placeable, ghostTile.transform.position, ghostTile.transform.rotation);
+            inst.transform.SetParent(grid.transform);
+            Message.Publish(new ExhibitPlaced(inst));
+            DisableGhostObject();
+        }
+
+
         private void EnableGhostObject()
         {
             ghostTile.EnablePlaceable();
