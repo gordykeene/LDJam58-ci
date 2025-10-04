@@ -10,4 +10,8 @@ public sealed class GameState
     
     // All enums used in this class should have specified integer values.
     // This is necessary to preserve backwards save compatibility.
+
+    public int currentPeriodIndex = 0;
+    public int currentAppeal = 0;
+    public int currentNumVisitingGroups = 0;
 }
