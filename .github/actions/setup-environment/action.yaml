@@ -6,6 +6,7 @@ runs:
     - name: Set environment variables
       shell: bash
       run: |
+        echo "SHORT_SHA=$(echo $GITHUB_SHA | cut -c1-7)" >> $GITHUB_ENV
         echo "PROJECT_PATH=./src/LDJam58" >> $GITHUB_ENV
         echo "ITCH_IO_PROJECT=enigmadragons/gallery-genius" >> $GITHUB_ENV
 
