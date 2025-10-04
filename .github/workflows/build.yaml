@@ -25,15 +25,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - ${{ inputs.platforms == 'WebGL' && fromJson('{"targetPlatform": "WebGL"}') || fromJson('{}') }}
-          - ${{ inputs.platforms == 'StandaloneWindows64' && fromJson('{"targetPlatform": "StandaloneWindows64"}') || fromJson('{}') }}
-          - ${{ inputs.platforms == 'StandaloneOSX' && fromJson('{"targetPlatform": "StandaloneOSX"}') || fromJson('{}') }}
-          - ${{ inputs.platforms == 'All' && fromJson('{"targetPlatform": "WebGL"}') || fromJson('{}') }}
-          - ${{ inputs.platforms == 'All' && fromJson('{"targetPlatform": "StandaloneWindows64"}') || fromJson('{}') }}
-          - ${{ inputs.platforms == 'All' && fromJson('{"targetPlatform": "StandaloneOSX"}') || fromJson('{}') }}
+        targetPlatform: 
+          - ${{ inputs.platforms == 'All' && 'WebGL' || inputs.platforms }}
+          - ${{ inputs.platforms == 'All' && 'StandaloneWindows64' || null }}
+          - ${{ inputs.platforms == 'All' && 'StandaloneOSX' || null }}
         exclude:
-          - {}
+          - targetPlatform: null
 
     steps:
       - uses: actions/checkout@v4
