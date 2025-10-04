@@ -1,9 +1,8 @@
     public enum ExhibitRarity
     {
-        Common = 0,
-        Uncommon = 1,
+        Common = 1,
         Rare = 2,
-        Epic = 3,
-        Legendary = 4
+        Exotic = 3,
+        Mythic = 4
     }
     

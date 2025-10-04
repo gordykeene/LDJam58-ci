@@ -1,4 +1,5 @@
 using System;
+using Assets.Scripts;
 using Game.Messages;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -23,7 +24,7 @@ namespace Game.TilePlacement
         [SerializeField]
         private GhostTile ghostTile;
         
-        private GameObject placeable;
+        private ExhibitTileType  exhibitTileType;
         
         private PlacementState currentState;
         
@@ -43,7 +44,7 @@ namespace Game.TilePlacement
         {
             targetRotation =  Quaternion.identity;
             currentState = PlacementState.NoTarget;
-            ghostTile.UpdatePlaceable(placeable);
+            ghostTile.UpdatePlaceable(exhibitTileType.ExhibitPrefab);
         }
 
         [Button]
@@ -106,9 +107,9 @@ namespace Game.TilePlacement
         private void PlaceExhibit()
         {
             currentState = PlacementState.NoTarget;
-            var inst= Instantiate(placeable, ghostTile.transform.position, ghostTile.transform.rotation);
+            var inst= Instantiate(exhibitTileType.ExhibitPrefab, ghostTile.transform.position, ghostTile.transform.rotation);
             inst.transform.SetParent(grid.transform);
-            Message.Publish(new ExhibitPlaced(inst));
+            Message.Publish(new ExhibitPlaced(inst, exhibitTileType));
             DisableGhostObject();
         }
 
@@ -125,7 +126,7 @@ namespace Game.TilePlacement
 
         protected override void Execute(StartPlacement msg)
         {
-            placeable = msg.exhibit.ExhibitPrefab;
+            exhibitTileType = msg.exhibit;
             StartPlacing();
         }
     }

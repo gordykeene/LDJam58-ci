@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: Blue Cube
   m_EditorClassIdentifier: Assembly-CSharp::Assets.Scripts.ExhibitTileType
   _displayName: Blue Gube
-  _tags: 05000000f4010000
+  _tags: 05000000
   exhibitPrefab: {fileID: 2828270286342438686, guid: f26e19862b6a5be41b92d8eb26767120,
     type: 3}
   exhibitSprite: {fileID: 21300000, guid: 2f974a4946ddf8d4381a4df7e51ee933, type: 3}
   _size: {x: 2, y: 2}
-  _rarity: 4
+  _rarity: 1
   _enjoyment: 50
   _popularity: 50
