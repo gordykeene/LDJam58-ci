@@ -16,17 +16,11 @@ namespace Game.TilePlacement
         [SerializeField] private float rotationAngle;
         [SerializeField]
         private LayerMask placementLayerMask;
-        [SerializeField]
-        private LayerMask tileLayerMask;
-        [SerializeField]
-        private string ghostLayerMask;
         
         
         [Header("Materials")]
         [SerializeField]
-        private Material ghostMaterial;
-        [SerializeField]
-        private Material errorMaterial;
+        private GhostTile ghostTile;
         
         [Header("Placeable (to be removed)")]
         [AssetsOnly]
@@ -35,9 +29,8 @@ namespace Game.TilePlacement
         private PlacementState currentState;
         
         private Quaternion targetRotation;
-        private GameObject ghostTile;
         private Material currentTileMaterial;
-        private bool canBePlaced;
+
         
         private enum PlacementState
         {
@@ -51,6 +44,7 @@ namespace Game.TilePlacement
         {
             targetRotation =  Quaternion.identity;
             currentState = PlacementState.NoTarget;
+            ghostTile.UpdatePlaceable(placeable);
         }
 
         [Button]
@@ -78,7 +72,6 @@ namespace Game.TilePlacement
             }
         }
         
-        private Vector3 rayOrigin;
         private void HandlePlacement()
         {
             var ray = raycastCamera.ScreenPointToRay(Input.mousePosition);
@@ -86,12 +79,12 @@ namespace Game.TilePlacement
             var isHit = Physics.Raycast(ray, out hit,  Mathf.Infinity, placementLayerMask);
             if (!isHit)
             {
-                if(currentState == PlacementState.GhostPlacement) DestroyGhostObject();
+                if(currentState == PlacementState.GhostPlacement) DisableGhostObject();
                 currentState = PlacementState.NoTarget;
                 return;
             }
             
-            if(currentState == PlacementState.NoTarget) CreateGhostObject();
+            if(currentState == PlacementState.NoTarget) EnableGhostObject();
             currentState = PlacementState.GhostPlacement;
             
             var cellSize = grid.cellSize;
@@ -99,17 +92,10 @@ namespace Game.TilePlacement
             var targetPosition = grid.CellToWorld(targetCell);
             
             //make a ray from target position and upward
-
-            rayOrigin = targetPosition + Vector3.up * 100f;
-            var overlapRay = new Ray(rayOrigin, Vector3.down);
-            
-            var oldCantBePlaced = canBePlaced;
-            canBePlaced = !Physics.Raycast(overlapRay, out hit, 200f, tileLayerMask);
             
             ghostTile.transform.position = targetPosition;
-            if(oldCantBePlaced != canBePlaced) SetErrorMaterial(!canBePlaced);
 
-            if(!canBePlaced) return;
+            if(ghostTile.IsOverlapping) return;
             
             //unghost on click
             if (Input.GetMouseButtonDown(0))
@@ -117,36 +103,19 @@ namespace Game.TilePlacement
                 currentState = PlacementState.NoTarget;
                 var inst= Instantiate(placeable, ghostTile.transform.position, ghostTile.transform.rotation);
                 inst.transform.SetParent(grid.transform);
-                DestroyGhostObject();
+                DisableGhostObject();
             }
         }
 
-        private void SetErrorMaterial(bool isErroring)
-        {
-            var rend =  ghostTile.GetComponent<Renderer>();
-            rend.material = isErroring ? errorMaterial : ghostMaterial;
-        }
         
-        private void CreateGhostObject()
+        private void EnableGhostObject()
         {
-            //De burgir has a ghost
-            ghostTile = Instantiate(placeable, grid.transform);
-            ghostTile.transform.rotation = targetRotation;
-            ghostTile.layer = LayerMask.NameToLayer(ghostLayerMask);
-            var rend =  ghostTile.GetComponent<Renderer>();
-            currentTileMaterial = rend.material;
-            rend.material = ghostMaterial;
+            ghostTile.EnablePlaceable();
         }
 
-        private void DestroyGhostObject()
+        private void DisableGhostObject()
         {
-            if(ghostTile != null) Destroy(ghostTile);
-        }
-
-        private void OnDrawGizmosSelected()
-        {
-            Gizmos.color = Color.red;
-            Gizmos.DrawRay(rayOrigin, Vector3.up);
+            ghostTile.DisablePlaceable();
         }
     }
 }
