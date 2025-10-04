@@ -11,14 +11,16 @@ namespace Game.TilePlacement
         private Camera raycastCamera;
         [SerializeField]
         private Grid grid;
-        
-        [Header("Layers")]
+
+        [Header("Settings")] 
+        [SerializeField] private float rotationAngle;
         [SerializeField]
         private LayerMask placementLayerMask;
         [SerializeField]
         private LayerMask tileLayerMask;
         [SerializeField]
         private string ghostLayerMask;
+        
         
         [Header("Materials")]
         [SerializeField]
@@ -32,6 +34,7 @@ namespace Game.TilePlacement
         
         private PlacementState currentState;
         
+        private Quaternion targetRotation;
         private GameObject ghostTile;
         private Material currentTileMaterial;
         private bool canBePlaced;
@@ -46,6 +49,7 @@ namespace Game.TilePlacement
         [Button]
         public void StartPlacing()
         {
+            targetRotation =  Quaternion.identity;
             currentState = PlacementState.NoTarget;
         }
 
@@ -57,9 +61,23 @@ namespace Game.TilePlacement
         
         private void Update()
         {
-            if(currentState != PlacementState.Disabled) HandlePlacement();
+            if(currentState == PlacementState.Disabled) return;
+            
+            HandlePlacement();
+            HandleRotation();
         }
 
+        private void HandleRotation()
+        {
+            if(currentState != PlacementState.GhostPlacement) return;
+            
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                targetRotation *= Quaternion.Euler(0f, -90f, 0f);
+                ghostTile.transform.rotation = targetRotation;
+            }
+        }
+        
         private Vector3 rayOrigin;
         private void HandlePlacement()
         {
@@ -113,6 +131,7 @@ namespace Game.TilePlacement
         {
             //De burgir has a ghost
             ghostTile = Instantiate(placeable, grid.transform);
+            ghostTile.transform.rotation = targetRotation;
             ghostTile.layer = LayerMask.NameToLayer(ghostLayerMask);
             var rend =  ghostTile.GetComponent<Renderer>();
             currentTileMaterial = rend.material;
