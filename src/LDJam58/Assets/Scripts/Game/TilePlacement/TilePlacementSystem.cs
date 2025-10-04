@@ -1,10 +1,11 @@
 using System;
+using Game.Messages;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Game.TilePlacement
 {
-    public class TilePlacementSystem : MonoBehaviour
+    public class TilePlacementSystem : OnMessage<StartPlacement>
     {
         [Header("Scene objects")]
         [SerializeField]
@@ -22,9 +23,7 @@ namespace Game.TilePlacement
         [SerializeField]
         private GhostTile ghostTile;
         
-        [Header("Placeable (to be removed)")]
-        [AssetsOnly]
-        public GameObject placeable;
+        private GameObject placeable;
         
         private PlacementState currentState;
         
@@ -116,6 +115,12 @@ namespace Game.TilePlacement
         private void DisableGhostObject()
         {
             ghostTile.DisablePlaceable();
+        }
+
+        protected override void Execute(StartPlacement msg)
+        {
+            placeable = msg.exhibit.ExhibitPrefab;
+            StartPlacing();
         }
     }
 }

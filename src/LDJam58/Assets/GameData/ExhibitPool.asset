@@ -14,3 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Game.ExhibitPool.ExhibitPoolObject
   exhibits:
   - {fileID: 11400000, guid: d1ee513753ebc464aaa758942529d9a8, type: 2}
+  - {fileID: 11400000, guid: b04b837405ee56d4cb600b8ceb4418d9, type: 2}
+  - {fileID: 11400000, guid: c3789020875d3df40ba0c284bf2ad408, type: 2}

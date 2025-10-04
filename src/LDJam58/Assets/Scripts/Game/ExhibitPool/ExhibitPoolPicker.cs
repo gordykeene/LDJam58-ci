@@ -2,12 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Assets.Scripts;
+using Game.Messages;
 using UnityEngine;
 
 namespace Game.ExhibitPool
 {
     
-    public class ExhibitPoolPicker : MonoBehaviour
+    public class ExhibitPoolPicker : OnMessage<StartExhibitPick>
     {
         [SerializeField] private int outputSize;
         [SerializeField] private ExhibitPoolObject exhibitPoolObject;
@@ -32,14 +33,14 @@ namespace Game.ExhibitPool
             foreach (var exhibit in exhibitPoolObject.Exhibits)
             {
                 exhibitPool.Add(exhibit);
-                
             }
+            //RecalculateViableTags();
         }
 
-        private void RecalculateViableTags()
+        private void RecalculateViableTags(List<ExhibitTileType> pool)
         {
             viableTags.Clear();
-            foreach (var exhibit in exhibitPool)
+            foreach (var exhibit in pool)
             {
                 foreach (var tag in exhibit.Tags)
                 {
@@ -69,29 +70,28 @@ namespace Game.ExhibitPool
         private void ReturnToPool(ExhibitTileType exhibit)
         {
             exhibitPool.Add(exhibit);
-            RecalculateViableTags();
         }
         
         public void RemoveFromPool(ExhibitTileType exhibitTile)
         {
             exhibitPool.Remove(exhibitTile);
-            RecalculateViableTags();
         }
         
         private ExhibitTileType GetRandomExhibitTile()
         {
             var rarity = PickRandomExhibitRarity();
-            var tag = viableTags.ToList().DrawRandom();
             var rarityPool = GetRareExhibitPool(rarity);
+            RecalculateViableTags(rarityPool);
+            var tag = viableTags.ToList().DrawRandom();
             var tagPool = rarityPool.Where(x => x.Tags.Contains(tag)).ToList();
             return tagPool.DrawRandom();
         }
 
-        private ExhibitRarity PickRandomExhibitRarity()
+        private ExhibitRarity PickRandomExhibitRarity(float bonusChance = 0f)
         {
             var rarity = ExhibitRarity.Common;
 
-            var random = Rng.Float();
+            var random = Rng.Float() - bonusChance;
 
             if (random < legendaryChance)
             {
@@ -116,8 +116,12 @@ namespace Game.ExhibitPool
                 rarity = ExhibitRarity.Uncommon;
                 if (GetRareExhibitCount(rarity) > 0) return rarity;
             }
-            
-            return ExhibitRarity.Common;
+
+            rarity = ExhibitRarity.Common;
+            if (GetRareExhibitCount(rarity) > 0) return rarity;
+
+            //If case there's no commons left, we roll again but this time with greater chance for rares
+            return PickRandomExhibitRarity( bonusChance + 0.1f);
         }
 
         private List<ExhibitTileType> GetRareExhibitPool(ExhibitRarity rarity)
@@ -132,6 +136,13 @@ namespace Game.ExhibitPool
         private int GetRareExhibitCount(ExhibitRarity rarity)
         {
             return exhibitPool.Count(x => x.Rarity == rarity);
+        }
+
+        protected override void Execute(StartExhibitPick msg)
+        {
+            var list = PickRandomExhibits();
+            var payload = new BeginPickThree(list.ToArray());
+            Message.Publish(payload);
         }
     }
 }

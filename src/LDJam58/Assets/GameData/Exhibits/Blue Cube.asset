@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 00f6c8aa09cc745bd9f3e6f4a1b79a3b, type: 3}
-  m_Name: Dino
+  m_Name: Blue Cube
   m_EditorClassIdentifier: Assembly-CSharp::Assets.Scripts.ExhibitTileType
-  _displayName: Dino Skeleton
-  _tags: 01000000f5010000
-  exhibitPrefab: {fileID: 8241689388621039879, guid: 336e350e2488a744b9a45fb271bf07cb,
+  _displayName: Blue Gube
+  _tags: 05000000f4010000
+  exhibitPrefab: {fileID: 2828270286342438686, guid: f26e19862b6a5be41b92d8eb26767120,
     type: 3}
-  exhibitSprite: {fileID: 21300000, guid: 75f3d475bdc8fc14a91bfb4512d67e87, type: 3}
+  exhibitSprite: {fileID: 21300000, guid: 2f974a4946ddf8d4381a4df7e51ee933, type: 3}
   _size: {x: 2, y: 2}
-  _rarity: 1
+  _rarity: 4
   _enjoyment: 50
   _popularity: 50

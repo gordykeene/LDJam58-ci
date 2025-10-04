@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 2187632940141381527}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -8.28034, y: 0, z: -7.85523}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -128,8 +128,6 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   ghostTile: {fileID: 5439400486338443691}
-  placeable: {fileID: 6677439674201967428, guid: 816e3e0c786ac4f41b5e473f80b79a83,
-    type: 3}
 --- !u!1 &7114138981062244056
 GameObject:
   m_ObjectHideFlags: 0

@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using Assets.Scripts;
 using System.Linq;
+using Game.Messages;
 
 public class ExhibitPickerView : MonoBehaviour
 {
@@ -13,10 +14,14 @@ public class ExhibitPickerView : MonoBehaviour
     [SerializeField] private KeyValueLabel _enjoymentLabel;
     [SerializeField] private KeyValueLabel _popularityLabel;
     [SerializeField] private TextMeshProUGUI _tagsLabel;
-
+    [SerializeField] private Button _pickButton;
+    
+    private ExhibitTileType exhibitTileType;
     public void Init(ExhibitTileType exhibits)
     {
-        //_exhibitImage.sprite = exhibits.Sprite;
+        exhibitTileType = exhibits;
+        _pickButton.onClick.AddListener(PickExhibit);
+        _exhibitImage.sprite = exhibits.ExhibitSprite;
         _exhibitNameLabel.Init("Name", exhibits.DisplayName);
         _sizeLabel.Init("Size", exhibits.Size.x + "x" + exhibits.Size.y);
         _rarityLabel.Init("Rarity", exhibits.Rarity.ToString());
@@ -28,5 +33,11 @@ public class ExhibitPickerView : MonoBehaviour
             var withSpaces = System.Text.RegularExpressions.Regex.Replace(noUnderscore, "(\\B[A-Z])", " $1");
             return withSpaces;
         }));
+    }
+
+    private void PickExhibit()
+    {
+        Message.Publish(new StartPlacement(exhibitTileType));
+        Message.Publish(new ClosePickMenu());
     }
 }

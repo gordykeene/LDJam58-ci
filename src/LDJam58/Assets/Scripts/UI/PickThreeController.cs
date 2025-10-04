@@ -1,11 +1,19 @@
+using Game.Messages;
 using UnityEngine;
 
 // TODO: Juice the Change!
-public class PickThreeController : OnMessage<BeginPickThree>
+public class PickThreeController : OnMessage<BeginPickThree, ClosePickMenu>
 {
     [SerializeField] private ExhibitPickerView _one;
     [SerializeField] private ExhibitPickerView _two;
     [SerializeField] private ExhibitPickerView _three;
+
+    protected override void Execute(ClosePickMenu msg)
+    {
+        _one.gameObject.SetActive(false);
+        _two.gameObject.SetActive(false);
+        _three.gameObject.SetActive(false);
+    }
 
     protected override void AfterEnable()
     {
@@ -13,6 +21,8 @@ public class PickThreeController : OnMessage<BeginPickThree>
         _two.gameObject.SetActive(false);
         _three.gameObject.SetActive(false);
     }
+    
+    
 
     protected override void Execute(BeginPickThree msg)
     {
