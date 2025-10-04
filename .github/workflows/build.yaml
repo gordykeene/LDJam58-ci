@@ -48,8 +48,15 @@ jobs:
             Library-${{ matrix.targetPlatform }}-
             Library-
 
-      - if: matrix.targetPlatform == 'Android'
+      - name: Free Disk Space
         uses: jlumbroso/free-disk-space@v1.3.1
+        with:
+          tool-cache: true  # Removes GitHub's tool cache
+          android: true     # Removes Android SDK
+          dotnet: true      # Removes .NET SDK
+          haskell: true     # Removes Haskell/GHC
+          docker-images: true
+          large-packages: true  # Removes other large packages like boost
 
       - uses: game-ci/unity-builder@v4
         env:

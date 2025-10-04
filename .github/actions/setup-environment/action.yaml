@@ -20,3 +20,12 @@ runs:
 # - secrets.ITCH_IO_API_KEY
 #   see: https://itch.io/docs/itchio/cli/#getting-an-api-key
 # Note the above "ITCH_IO_PROJECT" is formed from the user/project-name
+
+# Oh, hey, you are are probably wondering why I don't use GitHub's Action Variables?
+# 
+# * They are not in source control, and just create more places to we have to manually
+#   manage things: Did we sprll is right? Do I have permission to edit it? etc.
+# * There are some variables (like SHORT_SHA) that are not have to be computer anyway,
+#   so why not just set all the "global" things in one place.
+# * Settings don't show up in a code search, making them harder to validate and maintain.
+#   "Is this the project with the extra options?" "Did I miss one?" etc.

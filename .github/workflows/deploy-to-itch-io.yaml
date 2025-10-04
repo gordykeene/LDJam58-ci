@@ -1,6 +1,6 @@
 name: Deploy To Itch.io
 
-run-name: Deploy '${{ inputs.tag }}' to ${{ inputs.channel }} requested by ${{ github.actor }}
+run-name: Deploy '${{ inputs.tag }}' ${{ inputs.channel }} to Itch.io requested by ${{ github.actor }}
 on:
   workflow_dispatch:
     inputs:
