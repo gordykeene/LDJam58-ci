@@ -40,23 +40,31 @@ jobs:
 
       - uses: ./.github/actions/setup-environment
 
+      - name: Assemble Build Tag
+        run: |
+          RELEASE_TAG="${{ env.PROJECT_NAME }}-v${VERSION_NUMBER}-${{ matrix.targetPlatform }}"
+          echo "RELEASE_TAG=$RELEASE_TAG" >> $GITHUB_ENV
+          echo "Release Tag: $RELEASE_TAG"
+
       - uses: actions/cache@v4
         with:
           path: ${{ env.PROJECT_PATH }}/Library
           key: Library-${{ matrix.targetPlatform }}-${{ hashFiles('**/ProjectSettings/ProjectVersion.txt') }}
-          restore-keys: |
-            Library-${{ matrix.targetPlatform }}-
-            Library-
+          restore-keys:
+            - Library-${{ matrix.targetPlatform }}-
+            - Library-
 
       - name: Free Disk Space
         uses: jlumbroso/free-disk-space@v1.3.1
         with:
-          tool-cache: true  # Removes GitHub's tool cache
-          android: true     # Removes Android SDK
-          dotnet: true      # Removes .NET SDK
-          haskell: true     # Removes Haskell/GHC
-          docker-images: true
-          large-packages: true  # Removes other large packages like boost
+          # If all 6 are enabled, it can free ~33GiB, bur consumes ~9mins
+          # Adjust as needed to balance speed vs space
+          # tool-cache: true  # Removes GitHub's tool cache
+          android: true     # Removes Android SDK, ~9.6GiB
+          # dotnet: true      # Removes .NET SDK, ~3.3GiB
+          haskell: true     # Removes Haskell/GHC, ~6.2GiB
+          # docker-images: true # 0B
+          # large-packages: true  # Removes other large packages like boost, ~4.6GiB
 
       - uses: game-ci/unity-builder@v4
         env:
@@ -70,18 +78,17 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: Build-${{ matrix.targetPlatform }}
+          name: ${{ env.RELEASE_TAG }}
           path: build/${{ matrix.targetPlatform }}
           retention-days: 7
 
       - name: Create release tag
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
         run: |
-          TAG_NAME="build-$(date +'%Y%m%d-%H%M%S')-${SHORT_SHA}"
-          echo "Creating tag: $TAG_NAME"
+          echo "Creating tag: $RELEASE_TAG"
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git tag $TAG_NAME
-          git push origin $TAG_NAME
-          echo "BUILD_TAG=$TAG_NAME" >> $GITHUB_ENV
-          echo "::notice title=Build Tag Created::Tag $TAG_NAME created for build artifacts"
+          git tag $RELEASE_TAG
+          git push origin $RELEASE_TAG
+          echo "BUILD_TAG=$RELEASE_TAG" >> $GITHUB_ENV
+          echo "::notice title=Build Tag Created::Tag $RELEASE_TAG created for build artifacts"
