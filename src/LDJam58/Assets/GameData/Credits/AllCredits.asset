@@ -14,3 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   credits:
   - {fileID: 11400000, guid: 120e5b277ce9dd244b785a2f16009e7a, type: 2}
+  - {fileID: 11400000, guid: 50520e2253ab44a0d863c8abb8698758, type: 2}
+  - {fileID: 11400000, guid: 9f3a335ddb9e34b9a88e2f26e79cd90c, type: 2}
+  - {fileID: 11400000, guid: c9187ace5b378432eb2880528879306f, type: 2}
+  - {fileID: 11400000, guid: ef453f0ea213047d7b6d38c11484e927, type: 2}
+  - {fileID: 11400000, guid: eaa877ad21190416d8042e1a0d9a53ba, type: 2}

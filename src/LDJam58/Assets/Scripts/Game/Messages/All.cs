@@ -24,3 +24,23 @@ public class ExhibitPicked
         Exhibit = exhibit;
     }
 }
+
+public class PeriodInitiatized 
+{
+    public ProgressionPeriodConfig Period;
+
+    public PeriodInitiatized(ProgressionPeriodConfig period)
+    {
+        Period = period;
+    }
+}
+
+public class LockCameraMovement
+{
+
+}
+
+public class UnlockCameraMovement
+{
+
+}

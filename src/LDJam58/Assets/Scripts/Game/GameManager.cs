@@ -17,6 +17,8 @@ public class GameManager : OnMessage<AdvancePeriod>
             gs.currentNumVisitingGroups = currentPeriod.NumVisitingGroups;
             return gs;
         });
+
+        Message.Publish(new PeriodInitiatized(currentPeriod));
     }
 
     private ProgressionPeriodConfig GetCurrentPeriod()

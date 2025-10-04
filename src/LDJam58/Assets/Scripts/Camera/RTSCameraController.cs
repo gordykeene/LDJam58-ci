@@ -12,8 +12,10 @@ namespace Assets.Scripts
     /// - Smoothing and world-bounds clamping
     /// Attach to a Camera. For top-down, set a tilt (e.g., 60°) and position above ground.
     /// </summary>
-    public class RtsCameraController : MonoBehaviour
+    public class RtsCameraController : OnMessage<LockCameraMovement, UnlockCameraMovement>
     {
+        private bool _movementEnabled = true;
+        
         [Header("Movement (Planar)")]
         [SerializeField] private float _moveSpeed = 20f;
         [SerializeField] private bool _useEdgeScroll = true;
@@ -65,6 +67,9 @@ namespace Assets.Scripts
 
         private void Update()
         {
+            if (!_movementEnabled)
+                return;
+
             HandleMovementInput();
             HandleRotationInput();
             HandleZoomInput();
@@ -227,6 +232,16 @@ namespace Assets.Scripts
             _xBounds = xRange;
             _zBounds = zRange;
             _clampToBounds = true;
+        }
+
+        protected override void Execute(LockCameraMovement msg)
+        {
+            _movementEnabled = false;
+        }
+
+        protected override void Execute(UnlockCameraMovement msg)
+        {
+            _movementEnabled = true;
         }
     }
 }

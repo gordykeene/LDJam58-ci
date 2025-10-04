@@ -29,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 2570904851515792434}
   serializedVersion: 2
   m_LocalRotation: {x: 0.70710677, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: -10, z: 0}
+  m_LocalPosition: {x: 0, y: 18, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -150,14 +150,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62556a11dd1974fcaa18d34e57faaee1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RTSCameraController
-  _moveSpeed: 12
+  _moveSpeed: 20
   _useEdgeScroll: 1
-  _edgeThicknessPercent: 0.04
+  _edgeThicknessPercent: 0.1
   _allowRotation: 1
   _rotationSpeed: 90
-  _zoomSpeed: 200
-  _minZoom: 10
-  _maxZoom: 120
+  _zoomSpeed: 300
+  _minZoom: 20
+  _maxZoom: 60
   _zoomSmoothing: 0.12
   _positionSmoothing: 0.08
   _clampToBounds: 0
