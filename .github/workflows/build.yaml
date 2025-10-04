@@ -70,8 +70,8 @@ jobs:
       - name: Create release tag
         if: github.ref == 'refs/heads/main'
         run: |
-          SHORT_SHA="${{ github.sha }}"
-          TAG_NAME="build-$(date +'%Y%m%d-%H%M%S')-${SHORT_SHA:0:7}"
+          SHORT_SHA="${GITHUB_SHA:0:7}"
+          TAG_NAME="build-$(date +'%Y%m%d-%H%M%S')-${SHORT_SHA}"
           echo "Creating tag: $TAG_NAME"
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
