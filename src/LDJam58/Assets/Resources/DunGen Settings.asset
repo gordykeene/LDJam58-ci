@@ -1,5 +1,18 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-8472242515239033699
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59296c11d75e7024ebd73d93f5babf99, type: 3}
+  m_Name: Default
+  m_EditorClassIdentifier: DunGen::DunGen.DoorwaySocket
+  size: {x: 1, y: 2}
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13,33 +26,20 @@ MonoBehaviour:
   m_Name: DunGen Settings
   m_EditorClassIdentifier: DunGen::DunGen.DunGenSettings
   BroadphaseSettings:
-    rid: 5826072530071846912
+    rid: 3648631565439992103
   BoundsCalculationsIgnoreSprites: 0
   RecalculateTileBoundsOnSave: 1
   EnableTilePooling: 0
   DisplayFailureReportWindow: 1
   CheckForUnusedFiles: 1
-  defaultSocket: {fileID: 0}
+  defaultSocket: {fileID: -8472242515239033699}
   tagManager:
     keys: 
     values: []
   references:
     version: 2
     RefIds:
-    - rid: 5826072530071846912
+    - rid: 3648631565439992103
       type: {class: SpatialHashBroadphaseSettings, ns: DunGen.Collision, asm: DunGen}
       data:
         CellSize: 40
---- !u!114 &3286859773079236964
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59296c11d75e7024ebd73d93f5babf99, type: 3}
-  m_Name: Default
-  m_EditorClassIdentifier: DunGen::DunGen.DoorwaySocket
-  size: {x: 1, y: 2}
