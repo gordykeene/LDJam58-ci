@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEditor;
 using System.Diagnostics;
 using System.IO;
+using System.Collections.Generic;
 
 public static class OpenInPhotoshopMenuItem
 {
@@ -30,24 +31,53 @@ public static class OpenInPhotoshopMenuItem
         // Try to find Photoshop executable
         string photoshopPath = FindPhotoshopPath();
         
-        if (string.IsNullOrEmpty(photoshopPath))
-        {
-            // Fallback: try to open with default application
-            UnityEngine.Debug.LogWarning("Photoshop not found. Opening with default application...");
-            Process.Start(fullPath);
-            return;
-        }
+		if (string.IsNullOrEmpty(photoshopPath))
+		{
+			// Try macOS bundle id first
+			if (Application.platform == RuntimePlatform.OSXEditor)
+			{
+				try
+				{
+					Process.Start("open", $"-b com.adobe.Photoshop \"{fullPath}\"");
+					UnityEngine.Debug.Log($"Opening {fullPath} in Photoshop via bundle id");
+					return;
+				}
+				catch (System.Exception)
+				{
+					// ignore and fall back below
+				}
+			}
 
-        try
-        {
-            Process.Start(photoshopPath, $"\"{fullPath}\"");
-            UnityEngine.Debug.Log($"Opening {fullPath} in Photoshop");
-        }
+			// Fallback: try to open with default application
+			UnityEngine.Debug.LogWarning("Photoshop not found. Opening with default application...");
+			if (Application.platform == RuntimePlatform.OSXEditor)
+				Process.Start("open", $"\"{fullPath}\"");
+			else
+				Process.Start(fullPath);
+			return;
+		}
+
+		try
+		{
+			if (Application.platform == RuntimePlatform.OSXEditor && Directory.Exists(photoshopPath))
+			{
+				// photoshopPath points to an .app bundle directory
+				Process.Start("open", $"-a \"{photoshopPath}\" \"{fullPath}\"");
+			}
+			else
+			{
+				Process.Start(photoshopPath, $"\"{fullPath}\"");
+			}
+			UnityEngine.Debug.Log($"Opening {fullPath} in Photoshop");
+		}
         catch (System.Exception ex)
         {
             UnityEngine.Debug.LogError($"Failed to open Photoshop: {ex.Message}");
             // Fallback to default application
-            Process.Start(fullPath);
+			if (Application.platform == RuntimePlatform.OSXEditor)
+				Process.Start("open", $"\"{fullPath}\"");
+			else
+				Process.Start(fullPath);
         }
     }
 
@@ -107,12 +137,58 @@ public static class OpenInPhotoshopMenuItem
                 return path;
         }
 
-        // Check EditorPrefs for custom path
-        string customPath = EditorPrefs.GetString("CustomPhotoshopPath", "");
-        if (!string.IsNullOrEmpty(customPath) && File.Exists(customPath))
-            return customPath;
+		// Check EditorPrefs for custom path
+		string customPath = EditorPrefs.GetString("CustomPhotoshopPath", "");
+		if (!string.IsNullOrEmpty(customPath) && (File.Exists(customPath) || Directory.Exists(customPath)))
+			return customPath;
 
-        return null;
+		// macOS: attempt to autodetect Adobe Photoshop .app bundles
+		if (Application.platform == RuntimePlatform.OSXEditor)
+		{
+			try
+			{
+				List<string> candidates = new List<string>();
+				string userHome = System.Environment.GetFolderPath(System.Environment.SpecialFolder.UserProfile);
+				string[] roots = new string[]
+				{
+					"/Applications",
+					Path.Combine(userHome, "Applications")
+				};
+
+				foreach (string root in roots)
+				{
+					if (!Directory.Exists(root))
+						continue;
+
+					// Direct .app bundles
+					string[] directApps = Directory.GetDirectories(root, "Adobe Photoshop*.app", SearchOption.TopDirectoryOnly);
+					if (directApps != null && directApps.Length > 0)
+						candidates.AddRange(directApps);
+
+					// Version directories that may contain the .app bundle
+					string[] versionFolders = Directory.GetDirectories(root, "Adobe Photoshop*", SearchOption.TopDirectoryOnly);
+					foreach (string folder in versionFolders)
+					{
+						try
+						{
+							string[] innerApps = Directory.GetDirectories(folder, "Adobe Photoshop*.app", SearchOption.TopDirectoryOnly);
+							if (innerApps != null && innerApps.Length > 0)
+								candidates.AddRange(innerApps);
+						}
+						catch { }
+					}
+				}
+
+				if (candidates.Count > 0)
+				{
+					candidates.Sort();
+					return candidates[candidates.Count - 1];
+				}
+			}
+			catch { }
+		}
+
+		return null;
     }
 
     // Allow users to set a custom Photoshop path
@@ -120,14 +196,29 @@ public static class OpenInPhotoshopMenuItem
     private static void SetCustomPhotoshopPath()
     {
         string currentPath = EditorPrefs.GetString("CustomPhotoshopPath", "");
-        string path = EditorUtility.OpenFilePanel("Select Photoshop Executable", 
-            string.IsNullOrEmpty(currentPath) ? @"C:\Program Files\Adobe" : Path.GetDirectoryName(currentPath), 
-            "exe");
-
-        if (!string.IsNullOrEmpty(path))
+        
+        if (Application.platform == RuntimePlatform.OSXEditor)
         {
-            EditorPrefs.SetString("CustomPhotoshopPath", path);
-            UnityEngine.Debug.Log($"Custom Photoshop path set to: {path}");
+            string startDir = string.IsNullOrEmpty(currentPath) ? "/Applications" : currentPath;
+            string path = EditorUtility.OpenFolderPanel("Select Photoshop .app bundle", startDir, "");
+            
+            if (!string.IsNullOrEmpty(path))
+            {
+                EditorPrefs.SetString("CustomPhotoshopPath", path);
+                UnityEngine.Debug.Log($"Custom Photoshop path set to: {path}");
+            }
+        }
+        else
+        {
+            string path = EditorUtility.OpenFilePanel("Select Photoshop Executable", 
+                string.IsNullOrEmpty(currentPath) ? @"C:\\Program Files\\Adobe" : Path.GetDirectoryName(currentPath), 
+                "exe");
+
+            if (!string.IsNullOrEmpty(path))
+            {
+                EditorPrefs.SetString("CustomPhotoshopPath", path);
+                UnityEngine.Debug.Log($"Custom Photoshop path set to: {path}");
+            }
         }
     }
 }
