@@ -5,6 +5,8 @@ public static class CurrentGameState
 {
     [SerializeField] private static GameState gameState;
 
+    public static GameState ReadOnly => gameState;
+
     public static void Init() => gameState = new GameState();
     public static void Init(GameState initialState) => gameState = initialState;
     public static void Subscribe(Action<GameStateChanged> onChange, object owner) => Message.Subscribe(onChange, owner);

@@ -6,3 +6,4 @@
         Epic = 3,
         Legendary = 4
     }
+    
