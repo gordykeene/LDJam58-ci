@@ -1,0 +1,35 @@
+flowchart LR
+    %% Overall Flow
+    A[Launch Game] --> B[Logo Scene]
+    B --> C[Main Menu Scene]
+    C --> D[Game Scene]
+    D --> A0
+
+    %% Outer Loop: Period (Season)
+    subgraph OuterLoop [Period (Season) Loop]
+        direction LR
+        A0([Start Period (Season)]) --> A1[Introduce Visitor Count and Target Appeal]
+        A1 --> A2[Exhibit Picking & Placement - N Exhibit Choices]
+
+        %% Inner Loop: Exhibit Placement
+        A2 --> B1
+        subgraph InnerLoop [Exhibit Picking & Placement - Inner Loop]
+            direction LR
+            B1[Player Picks an Exhibit] --> B2[Player Places the Exhibit]
+            B2 --> B3[Wait a few seconds & show number changes]
+            B3 --> B4{Period over triggered?}
+            B4 -- No --> B1
+        end
+
+        B4 -- Yes --> A3[Evaluate Period Score]
+        A3 --> A4[Show Group Sentiment and Score Impact]
+        A4 --> D1{Passed?}
+        D1 -- Lost --> LOSE([Game Lose])
+        D1 -- Passed --> D2{Has More Periods?}
+        D2 -- Yes --> A0
+        D2 -- No --> WIN([Game Won])
+    end
+
+    %% Outcomes connect back to Overall Flow
+    LOSE --> D
+    WIN --> F[Credits Scene]
