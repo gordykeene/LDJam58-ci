@@ -1,11 +1,19 @@
 # https://game.ci/docs/github/builder#complete-example
 name: Build project
 
-# Requirements:
-# - secrets.UNITY_EMAIL
-# - secrets.UNITY_PASSWORD
-
-on: [push, pull_request]
+on: 
+  workflow_dispatch:
+    inputs:
+      platforms:
+        description: 'Platforms to build'
+        required: true
+        type: choice
+        default: 'WebGL'
+        options:
+          - WebGL
+          - StandaloneWindows64
+          - StandaloneOSX
+          - All
 
 env:
   PROJECT_PATH: './src/LDJam58'
@@ -17,14 +25,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        targetPlatform:
-          #! - StandaloneOSX # Build a macOS standalone (Intel 64-bit).
-          # - StandaloneWindows # Build a Windows standalone.
-          #! - StandaloneWindows64 # Build a Windows 64-bit standalone.
-          # - StandaloneLinux64 # Build a Linux 64-bit standalone.
-          # - iOS # Build an iOS player.
-          # - Android # Build an Android .apk standalone app.
-          - WebGL # WebGL/HTML5.
+        include:
+          - ${{ inputs.platforms == 'WebGL' && fromJson('{"targetPlatform": "WebGL"}') || fromJson('{}') }}
+          - ${{ inputs.platforms == 'StandaloneWindows64' && fromJson('{"targetPlatform": "StandaloneWindows64"}') || fromJson('{}') }}
+          - ${{ inputs.platforms == 'StandaloneOSX' && fromJson('{"targetPlatform": "StandaloneOSX"}') || fromJson('{}') }}
+          - ${{ inputs.platforms == 'All' && fromJson('{"targetPlatform": "WebGL"}') || fromJson('{}') }}
+          - ${{ inputs.platforms == 'All' && fromJson('{"targetPlatform": "StandaloneWindows64"}') || fromJson('{}') }}
+          - ${{ inputs.platforms == 'All' && fromJson('{"targetPlatform": "StandaloneOSX"}') || fromJson('{}') }}
+        exclude:
+          - {}
 
     steps:
       - uses: actions/checkout@v4
@@ -52,7 +61,7 @@ jobs:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }} # For personal licenses
           # UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }} # For professional licenses
         with:
-          project-path: env.PROJECT_PATH || .
+          projectPath: ${{ env.PROJECT_PATH }}
           targetPlatform: ${{ matrix.targetPlatform }}
 
       - uses: actions/upload-artifact@v4
@@ -60,3 +69,16 @@ jobs:
           name: Build-${{ matrix.targetPlatform }}
           path: build/${{ matrix.targetPlatform }}
           retention-days: 7
+
+      - name: Create release tag
+        if: github.ref == 'refs/heads/main'
+        run: |
+          TAG_NAME="build-$(date +'%Y%m%d-%H%M%S')-${{ github.sha:0:7 }}"
+          echo "Creating tag: $TAG_NAME"
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git tag $TAG_NAME
+          git push origin $TAG_NAME
+          echo "BUILD_TAG=$TAG_NAME" >> $GITHUB_ENV
+          echo "::notice title=Build Tag Created::Tag $TAG_NAME created for build artifacts"
+

@@ -1,0 +1,68 @@
+name: Deploy To Itch.io
+
+run-name: Deploy '${{ inputs.tag }}' to ${{ inputs.channel }} requested by ${{ github.actor }}
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: The build tag to be deployed (e.g., build-20241004-123456-abc1234)
+        required: true
+        default: latest
+      channel:
+        description: The platform channel to be deployed
+        required: true
+        type: choice
+        options:
+          - StandaloneOSX
+          # - StandaloneWindows
+          - StandaloneWindows64
+          # - StandaloneLinux64
+          # - iOS
+          # - Android
+          - WebGL
+
+env:
+  RELEASE_TAG: ${{ inputs.tag }}
+  CHANNEL: ${{ inputs.channel }}
+
+jobs:
+  deploy:
+    name: Deploy to itch.io
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: ./.github/actions/setup-environment
+
+      - name: Resolve tag
+        id: resolve-tag
+        run: |
+          if [ "${{ inputs.tag }}" = "latest" ]; then
+            LATEST_TAG=$(git tag --sort=-version:refname | grep "^build-" | head -n 1)
+            echo "RESOLVED_TAG=$LATEST_TAG" >> $GITHUB_ENV
+            echo "Using latest build tag: $LATEST_TAG"
+          else
+            echo "RESOLVED_TAG=${{ inputs.tag }}" >> $GITHUB_ENV
+            echo "Using specified tag: ${{ inputs.tag }}"
+          fi
+
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.RESOLVED_TAG }}
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: Build-${{ inputs.channel }}
+          path: build/${{ inputs.channel }}
+
+      - name: Upload to itch.io
+        uses: robpc/itchio-upload-action@v1
+        with:
+          path: build/${{ inputs.channel }}
+          project: ${{ env.ITCH_IO_PROJECT }}
+          channel: ${{ inputs.channel }}
+          version: ${{ env.RESOLVED_TAG }}
+          api-key: ${{ secrets.ITCH_IO_API_KEY }}
