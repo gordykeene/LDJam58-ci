@@ -1,0 +1,84 @@
+# https://game.ci/docs/github/builder#complete-example
+name: Cache Clean Test
+
+on: 
+  workflow_dispatch:
+    inputs:
+      platforms:
+        description: 'Platforms to build'
+        required: true
+        type: choice
+        default: 'WebGL'
+        options:
+          - WebGL
+          - StandaloneWindows64
+          - StandaloneOSX
+          - All
+      # Add a boolean input to decide whether to Free the Android Disk Space
+      clear_android_cache:
+        description: 'Clear the Android Disk Space before building'
+        required: true
+        type: boolean
+        default: false
+      clear_haskell_disk_space:
+        description: 'Clear the Haskell Disk Space before building'
+        required: true
+        type: boolean
+        default: false
+      clear_docker_images_disk_space:
+        description: 'Clear the Docker Images Disk Space before building'
+        required: true
+        type: boolean
+        default: false
+      clear_tool-cache_disk_space:
+        description: 'Clear the Tool Cache Disk Space before building'
+        required: true
+        type: boolean
+        default: false
+      clear_dotnet_disk_space:
+        description: 'Clear the Dotnet Disk Space before building'
+        required: true
+        type: boolean
+        default: false
+      clear_large_packages_disk_space:    
+        description: 'Clear the Large Packages Disk Space before building'
+        required: true
+        type: boolean
+        default: false
+
+env:
+  PROJECT_PATH: './src/LDJam58'
+
+jobs:
+  buildForAllSupportedPlatforms:
+    name: Build for ${{ matrix.targetPlatform }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        targetPlatform: 
+          - ${{ inputs.platforms == 'All' && 'WebGL' || inputs.platforms }}
+          - ${{ inputs.platforms == 'All' && 'StandaloneWindows64' || null }}
+          - ${{ inputs.platforms == 'All' && 'StandaloneOSX' || null }}
+        exclude:
+          - targetPlatform: null
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          lfs: true
+
+      - uses: ./.github/actions/setup-environment
+
+      - name: Free Disk Space
+        uses: jlumbroso/free-disk-space@v1.3.1
+        with:
+          # If all 6 are enabled, it can free ~33GiB, bur consumes ~9mins
+          # Adjust as needed to balance speed vs space
+          android: ${{ inputs.clear_android_cache }} # Android SDK, ~9.6GiB
+          haskell: true         # Haskell/GHC, ~6.2GiB
+          docker-images: true   # 0B
+          tool-cache: false     # GitHub's tool cache
+          dotnet: false         # .NET SDK, ~3.3GiB
+          large-packages: false # Other large packages like boost, ~4.6GiB
