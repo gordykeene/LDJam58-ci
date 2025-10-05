@@ -51,7 +51,7 @@ env:
 
 jobs:
   buildForAllSupportedPlatforms:
-    name: Build for ${{ matrix.targetPlatform }}
+    name: Cache Clean Test with android: ${{ inputs.clear_android_cache }}, haskell: ${{ inputs.clear_haskell_disk_space }}, docker images: ${{ inputs.clear_docker_images_disk_space }}, tool-cache: ${{ inputs.clear_tool-cache_disk_space }}, dotnet: ${{ inputs.clear_dotnet_disk_space }}, large packages: ${{ inputs.clear_large_packages_disk_space }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -77,8 +77,8 @@ jobs:
           # If all 6 are enabled, it can free ~33GiB, bur consumes ~9mins
           # Adjust as needed to balance speed vs space
           android: ${{ inputs.clear_android_cache }} # Android SDK, ~9.6GiB
-          haskell: true         # Haskell/GHC, ~6.2GiB
-          docker-images: true   # 0B
-          tool-cache: false     # GitHub's tool cache
-          dotnet: false         # .NET SDK, ~3.3GiB
-          large-packages: false # Other large packages like boost, ~4.6GiB
+          haskell: ${{ inputs.clear_haskell_disk_space }} # Haskell/GHC, ~6.2GiB
+          docker-images: ${{ inputs.clear_docker_images_disk_space }} # 0B
+          tool-cache: ${{ inputs.clear_tool-cache_disk_space }} # GitHub's tool cache
+          dotnet: ${{ inputs.clear_dotnet_disk_space }} # .NET SDK, ~3.3GiB
+          large-packages: ${{ inputs.clear_large_packages_disk_space }} # Other large packages like boost, ~4.6GiB
