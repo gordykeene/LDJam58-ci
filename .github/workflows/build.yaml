@@ -15,8 +15,9 @@ on:
           - StandaloneOSX
           - All
 
-env:
-  PROJECT_PATH: './src/LDJam58'
+permissions:
+  contents: write
+  actions: read
 
 jobs:
   buildForAllSupportedPlatforms:
