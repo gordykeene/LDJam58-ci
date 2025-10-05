@@ -8,21 +8,21 @@ runs:
       run: |
         echo "SHORT_SHA=$(echo $GITHUB_SHA | cut -c1-7)" >> $GITHUB_ENV
         echo "PROJECT_PATH=./src/LDJam58" >> $GITHUB_ENV
-        echo "ITCH_IO_PROJECT=enigmadragons" >> $GITHUB_ENV
-        echo "PROJECT_NAME=gallery-genius" >> $GITHUB_ENV
+        echo "ITCH_IO_USER=enigmadragons" >> $GITHUB_ENV
+        echo "PROJECT_NAME=genius-gallery" >> $GITHUB_ENV
 
     - name: Assemble Build Tag
       shell: bash
       run: |
-        # Get the highest existing version number
-        LAST_VERSION_NUMBER=$(git tag -l "v*" | grep -E '^v[0-9]+$' | sort -V | tail -n 1 | sed 's/v//' || echo "0")
+        # Get the highest existing version number from build tags
+        LAST_VERSION_NUMBER=$(git tag -l "*-v*-*" | grep -oE 'v[0-9]+' | sed 's/v//' | sort -n | tail -n 1 || echo "0")
         # Latest known version number
         echo "LAST_VERSION_NUMBER=${LAST_VERSION_NUMBER}" >> $GITHUB_ENV
         # The next version number to use
         NEXT_VERSION_NUMBER=$((LAST_VERSION_NUMBER + 1))
         echo "VERSION_NUMBER=${NEXT_VERSION_NUMBER}" >> $GITHUB_ENV
 
-# You must also set the following secrets in your repository settings:
+# Also set the following secrets in your repository settings:
 # - secrets.UNITY_EMAIL
 # - secrets.UNITY_PASSWORD 
 # - secrets.UNITY_LICENSE or secrets.UNITY_SERIAL
@@ -32,11 +32,11 @@ runs:
 # - secrets.ITCH_IO_API_KEY
 #   see: https://itch.io/docs/itchio/cli/#getting-an-api-key
 
-# Oh, hey, you are are probably wondering why I don't use GitHub's Action Variables?
-# 
-# * They are not in source control, and just create more places to we have to manually
-#   manage things: Did we spell it right? Do I have permission to edit it? etc.
+# Oh, hey, why not use GitHub's Actions Variables?
+#
+# * They are not in source control, and just create more places where we have to manually
+#   manage things: Did we spell it right? Do I have permission to edit it? Etc.
 # * There are some variables (like SHORT_SHA) that have to be computed anyway,
-#   so why not just set all the "global" things in one place.
+#   so why not just set all the "global" things in one place.
 # * Settings don't show up in a code search, making them harder to validate and maintain.
-#   "Is this the project with the extra options?" "Did I miss one?" etc.
+#   "Is this the project with the extra options?" "Did I miss one?" and so on.

@@ -66,7 +66,7 @@ jobs:
         uses: robpc/itchio-upload-action@v1
         with:
           path: build/${{ inputs.channel }}
-          project: ${{ env.ITCH_IO_PROJECT }}/${{ env.PROJECT_NAME }}
+          project: ${{ env.ITCH_IO_USER }}/${{ env.PROJECT_NAME }}
           channel: ${{ inputs.channel }}
           version: ${{ env.ARTIFACT_NAME }}
           api-key: ${{ secrets.ITCH_IO_API_KEY }}
