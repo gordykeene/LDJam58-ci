@@ -53,11 +53,14 @@ jobs:
             echo "Using specified tag: ${{ inputs.tag }}"
           fi
 
+      # This action is known to be better at finding artifacts across workflow runs
       - name: Download build artifact
-        uses: actions/download-artifact@v4
+        uses: dawidd6/action-download-artifact@v3
         with:
           name: ${{ env.ARTIFACT_NAME }}
           path: build/${{ inputs.channel }}
+          workflow: build.yaml
+          workflow_conclusion: success
 
       - name: Upload to itch.io
         uses: robpc/itchio-upload-action@v1
