@@ -5,11 +5,11 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: The build version to be deployed (e.g., v19)
+        description: The tag to be deployed (e.g., gallery-genius-v19-WebGL)
         required: true
         default: latest
       channel:
-        description: The platform channel to be deployed (ignored if tag is specific)
+        description: The platform channel to be deployed (ignored if tag is provided)
         required: true
         type: choice
         options:
@@ -41,9 +41,14 @@ jobs:
         run: |
           if [ "${{ inputs.tag }}" = "latest" ]; then
             LATEST_TAG=$(git tag --sort=-version:refname | grep "\-${{ inputs.channel }}$" | head -n 1)
+            if [ -z "$LATEST_TAG" ]; then
+              echo "::error::No build tags found ending with '-${{ inputs.channel }}'"
+              exit 1
+            fi
             echo "ARTIFACT_NAME=$LATEST_TAG" >> $GITHUB_ENV
             echo "Using latest build tag for ${{ inputs.channel }}: $LATEST_TAG"
           else
+            # User entered the full tag like "gallery-genius-v19-WebGL"
             echo "ARTIFACT_NAME=${{ inputs.tag }}" >> $GITHUB_ENV
             echo "Using specified tag: ${{ inputs.tag }}"
           fi
