@@ -4,16 +4,6 @@ name: Cache Clean Test
 on: 
   workflow_dispatch:
     inputs:
-      platforms:
-        description: 'Platforms to build'
-        required: true
-        type: choice
-        default: 'WebGL'
-        options:
-          - WebGL
-          - StandaloneWindows64
-          - StandaloneOSX
-          - All
       # Add a boolean input to decide whether to Free the Android Disk Space
       clear_android_cache:
         description: 'Clear the Android Disk Space before building'
@@ -45,35 +35,31 @@ on:
         required: true
         type: boolean
         default: false
+      clear_swap_storage_disk_space:
+        description: 'Clear the Swap Storage Disk Space before building'
+        required: true
+        type: boolean
+        default: false
 
 env:
   PROJECT_PATH: './src/LDJam58'
 
 jobs:
-  buildForAllSupportedPlatforms:
+  diskCleanTest:
     name: Cache Clean Test
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        targetPlatform: 
-          - ${{ inputs.platforms == 'All' && 'WebGL' || inputs.platforms }}
-          - ${{ inputs.platforms == 'All' && 'StandaloneWindows64' || null }}
-          - ${{ inputs.platforms == 'All' && 'StandaloneOSX' || null }}
-        exclude:
-          - targetPlatform: null
 
     steps:
       - name: Log configuration
         run: |
           echo "Cache Clean Configuration:"
-          echo "Platform: ${{ matrix.targetPlatform }}"
           echo "Android: ${{ inputs.clear_android_cache }}"
           echo "Haskell: ${{ inputs.clear_haskell_disk_space }}"
           echo "Docker: ${{ inputs.clear_docker_images_disk_space }}"
           echo "Tool Cache: ${{ inputs.clear_tool_cache_disk_space }}"
           echo "Dotnet: ${{ inputs.clear_dotnet_disk_space }}"
           echo "Large Packages: ${{ inputs.clear_large_packages_disk_space }}"
+          echo "Swap Storage: ${{ inputs.clear_swap_storage_disk_space }}"
 
       - uses: actions/checkout@v4
         with:
@@ -85,11 +71,10 @@ jobs:
       - name: Free Disk Space
         uses: jlumbroso/free-disk-space@v1.3.1
         with:
-          # If all 6 are enabled, it can free ~33GiB, bur consumes ~9mins
-          # Adjust as needed to balance speed vs space
-          android: ${{ inputs.clear_android_cache }} # Android SDK, ~9.6GiB
-          haskell: ${{ inputs.clear_haskell_disk_space }} # Haskell/GHC, ~6.2GiB
-          docker-images: ${{ inputs.clear_docker_images_disk_space }} # 0B
-          tool-cache: ${{ inputs.clear_tool_cache_disk_space }} # GitHub's tool cache
-          dotnet: ${{ inputs.clear_dotnet_disk_space }} # .NET SDK, ~3.3GiB
-          large-packages: ${{ inputs.clear_large_packages_disk_space }} # Other large packages like boost, ~4.6GiB
+          android: ${{ inputs.clear_android_cache }}
+          haskell: ${{ inputs.clear_haskell_disk_space }}
+          docker-images: ${{ inputs.clear_docker_images_disk_space }}
+          tool-cache: ${{ inputs.clear_tool_cache_disk_space }}
+          dotnet: ${{ inputs.clear_dotnet_disk_space }}
+          large-packages: ${{ inputs.clear_large_packages_disk_space }}
+          swap-storage: ${{ inputs.clear_swap_storage_disk_space }}
