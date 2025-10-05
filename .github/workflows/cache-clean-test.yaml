@@ -51,7 +51,7 @@ env:
 
 jobs:
   buildForAllSupportedPlatforms:
-    name: Cache Clean Test with android:${{ inputs.clear_android_cache }}, haskell:${{ inputs.clear_haskell_disk_space }}, docker:${{ inputs.clear_docker_images_disk_space }}, tool-cache:${{ inputs.clear_tool_cache_disk_space }}, dotnet:${{ inputs.clear_dotnet_disk_space }}, large-packages:${{ inputs.clear_large_packages_disk_space }}
+    name: Cache Clean Test
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -64,6 +64,17 @@ jobs:
           - targetPlatform: null
 
     steps:
+      - name: Log configuration
+        run: |
+          echo "Cache Clean Configuration:"
+          echo "Platform: ${{ matrix.targetPlatform }}"
+          echo "Android: ${{ inputs.clear_android_cache }}"
+          echo "Haskell: ${{ inputs.clear_haskell_disk_space }}"
+          echo "Docker: ${{ inputs.clear_docker_images_disk_space }}"
+          echo "Tool Cache: ${{ inputs.clear_tool_cache_disk_space }}"
+          echo "Dotnet: ${{ inputs.clear_dotnet_disk_space }}"
+          echo "Large Packages: ${{ inputs.clear_large_packages_disk_space }}"
+
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
