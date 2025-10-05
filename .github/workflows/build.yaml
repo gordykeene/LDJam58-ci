@@ -57,14 +57,15 @@ jobs:
       - name: Free Disk Space
         uses: jlumbroso/free-disk-space@v1.3.1
         with:
-          # If all 6 are enabled, it can free ~33GiB, bur consumes ~9mins
+          # If all are enabled, it can free ~33GiB, but consumes ~9mins
           # Adjust as needed to balance speed vs space
-          android: true         # Android SDK, ~9.6GiB
-          haskell: true         # Haskell/GHC, ~6.2GiB
-          docker-images: true   # 0B
-          tool-cache: false     # GitHub's tool cache
-          dotnet: false         # .NET SDK, ~3.3GiB
-          large-packages: false # Other large packages like boost, ~4.6GiB
+          swap-storage: true    # Swap storage, 1s, 4.0GiB == 4100GiB/s
+          haskell: true         # Haskell/GHC, 8s, 6.2GiB = 794MiB/s
+          dotnet: true          # .NET SDK, 8s, 3.3GiB = 422.4MiB/s
+          android: false        # Android, 2m47s, 9.6GiB = 58.9MiB/s
+          tool-cache: false     # GitHub's tool cache, 1m45s, 5.0GiB = 48.8MiB/s
+          large-packages: false # Large packages like boost, 4m19s, 4.6GiB = 18.2MiB/s
+          docker-images: false  # "invalid", 0s, 0B ??
 
       - uses: game-ci/unity-builder@v4
         env:
